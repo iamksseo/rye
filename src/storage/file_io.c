@@ -2452,9 +2452,11 @@ fileio_read (UNUSED_ARG THREAD_ENTRY * thread_p, int vol_fd, void *io_page_p,
 
     p = (FILEIO_PAGE *) io_page_p;
 
-    crc = (LOG_LSA *) ((char *) io_page_p + page_size - sizeof (LOG_LSA));
-
-    assert (LSA_EQ (&(p->prv.lsa), crc));
+    if (p->prv.ptype == PAGE_BTREE || p->prv.ptype == PAGE_BTREE_ROOT)
+      {
+	crc = (LOG_LSA *) ((char *) io_page_p + page_size - sizeof (LOG_LSA));
+	assert (LSA_EQ (&(p->prv.lsa), crc));
+      }
   }
 #endif
 
@@ -2504,9 +2506,11 @@ fileio_write (THREAD_ENTRY * thread_p, int vol_fd, void *io_page_p,
 
     p = (FILEIO_PAGE *) io_page_p;
 
-    crc = (LOG_LSA *) ((char *) io_page_p + page_size - sizeof (LOG_LSA));
-
-    LSA_COPY (crc, &(p->prv.lsa));
+    if (p->prv.ptype == PAGE_BTREE || p->prv.ptype == PAGE_BTREE_ROOT)
+      {
+	crc = (LOG_LSA *) ((char *) io_page_p + page_size - sizeof (LOG_LSA));
+	LSA_COPY (crc, &(p->prv.lsa));
+      }
   }
 #endif
 
