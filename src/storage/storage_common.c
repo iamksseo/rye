@@ -39,7 +39,7 @@
 
 
 /* RESERVED_SIZE_IN_PAGE should be aligned */
-#define RESERVED_SIZE_IN_PAGE   sizeof(FILEIO_PAGE_RESERVED)
+#define RESERVED_SIZE_IN_PAGE   (sizeof(FILEIO_PAGE_RESERVED) + sizeof(LOG_LSA))
 
 #define IS_POWER_OF_2(x)        (((x) & ((x)-1)) == 0)
 

@@ -2444,6 +2444,20 @@ fileio_read (UNUSED_ARG THREAD_ENTRY * thread_p, int vol_fd, void *io_page_p,
 
   mnt_stats_counter_with_time (thread_p, MNT_STATS_FILE_IOREADS, 1,
 			       perf_start);
+
+#if 1
+  {
+    FILEIO_PAGE *p;
+    LOG_LSA *crc;
+
+    p = (FILEIO_PAGE *) io_page_p;
+
+    crc = (LOG_LSA *) ((char *) io_page_p + page_size - sizeof (LOG_LSA));
+
+    assert (LSA_EQ (&(p->prv.lsa), crc));
+  }
+#endif
+
   return io_page_p;
 }
 
@@ -2481,6 +2495,19 @@ fileio_write (THREAD_ENTRY * thread_p, int vol_fd, void *io_page_p,
     {
       gettimeofday (&start_time, NULL);
     }
+#endif
+
+#if 1
+  {
+    FILEIO_PAGE *p;
+    LOG_LSA *crc;
+
+    p = (FILEIO_PAGE *) io_page_p;
+
+    crc = (LOG_LSA *) ((char *) io_page_p + page_size - sizeof (LOG_LSA));
+
+    LSA_COPY (crc, &(p->prv.lsa));
+  }
 #endif
 
   while (is_retry == true)
